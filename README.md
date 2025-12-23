@@ -617,7 +617,11 @@ This project is licensed under the MIT License - see the [LICENSE](LICENSE) file
 
 <div align="center">
 
-### Built with ❤️ using React Native & Expo
+### Built with ❤️ by Riparna Chakraborty
+
+Using **React Native** & **Expo**
+
+[![GitHub](https://img.shields.io/badge/GitHub-chakrabortyriparna--max-181717?style=for-the-badge&logo=github)](https://github.com/chakrabortyriparna-max)
 
 **[⬆ Back to Top](#-ryde)**
 
