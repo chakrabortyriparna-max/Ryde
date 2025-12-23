@@ -1,0 +1,11 @@
+node_modules/
+.expo/
+.vscode/
+.git/
+.gitignore
+*.log
+package-lock.json
+android/
+ios/
+dist/
+web-build/

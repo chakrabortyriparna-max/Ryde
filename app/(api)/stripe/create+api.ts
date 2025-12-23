@@ -1,0 +1,56 @@
+import { Stripe } from "stripe";
+
+const stripe = new Stripe(process.env.STRIPE_SECRET_KEY!);
+
+export async function POST(request: Request) {
+    try {
+        const body = await request.json();
+        const { name, email, amount } = body;
+
+        if (!name || !email || !amount) {
+            return new Response(JSON.stringify({ error: "Missing required fields" }), {
+                status: 400,
+            });
+        }
+
+        let customer;
+        const existingCustomers = await stripe.customers.list({ email });
+
+        if (existingCustomers.data.length > 0) {
+            customer = existingCustomers.data[0];
+        } else {
+            customer = await stripe.customers.create({
+                name,
+                email,
+            });
+        }
+
+        const ephemeralKey = await stripe.ephemeralKeys.create(
+            { customer: customer.id },
+            { apiVersion: "2024-06-20" }
+        );
+
+        const paymentIntent = await stripe.paymentIntents.create({
+            amount: parseInt(amount) * 100,
+            currency: "usd",
+            customer: customer.id,
+            automatic_payment_methods: {
+                enabled: true,
+                allow_redirects: "never",
+            },
+        });
+
+        return new Response(
+            JSON.stringify({
+                paymentIntent: paymentIntent,
+                ephemeralKey: ephemeralKey,
+                customer: customer.id,
+            })
+        );
+    } catch (error: any) {
+        console.log(error);
+        return new Response(JSON.stringify({ error: error.message }), {
+            status: 500,
+        });
+    }
+}
